@@ -42,7 +42,7 @@ app.get("/details/:uuid", async (req, res) => {
         return res.redirect("/")
     }
 
-  DB.query(`SELECT * from downloads WHERE uuid = '${uuid}'`, async (err,result) => {
+  DB.query('SELECT * FROM downloads WHERE uuid = ?', [uuid], async (err, result) => {
     if(err){
       return res.json(err);
     }
@@ -118,19 +118,19 @@ app.get("/download", async (req, res) => {
 
   if (!name.error) {
 
-    DB.query(`SELECT * from downloads WHERE uuid = '${addonUuid}'`, (err,res) => {
+    DB.query('SELECT * FROM downloads WHERE uuid = ?', [addonUuid], (err, res) => {
       if(err){
         return console.error(err);
       }
       if(res.length > 0){
         const first = parseInt(res[0].downloads);
-        DB.query(`UPDATE downloads SET downloads='${(first + 1)}' WHERE uuid='${addonUuid}'`, (err, res) => {
+        DB.query('UPDATE downloads SET downloads = ? WHERE uuid = ?', [first + 1, addonUuid], (err, res) => {
           if(err){
             return console.error(err);
           }
         })
       }else{
-        DB.query(`INSERT INTO downloads (uuid, downloads) VALUES('${addonUuid}', 1 )`, (err , res) => {
+        DB.query('INSERT INTO downloads (uuid, downloads) VALUES(?, ?)', [addonUuid, 1], (err, res) => {
           if(err){
             return console.error(err);
           }
